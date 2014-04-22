@@ -33,6 +33,39 @@ double score2d(double d, double alpha) {
 //	return (exp(-alpha * d )/d);
 }
 
+double norm(double x, double y) {
+	return (sqrt(x * x * +y * y));
+}
+
+double func_gaussian(double x, double mu, double sigma) {
+	return (exp(-(x - mu) * (x - mu) / sigma / sigma));
+}
+
+void get_point(double &x, double &y) {
+	double r = 1.0 * rand() / RAND_MAX;
+	double q = 1.0 * rand() / RAND_MAX;
+
+	x = r*2-1;
+	y = q*2-1
+			;
+//	while (q > func_gaussian(r,0,1)){
+////		cout<<q<<" "<<r<<"  "<<"trying\n";
+//		r = 1.0 * rand() / RAND_MAX;
+//		q = 1.0 * rand() / RAND_MAX;
+//	}
+//
+//	double phi = 2.0*M_PI* rand() / RAND_MAX;
+//	x = cos(phi)*r;
+//	y = sin(phi)*r;
+}
+
+double weight2d(double x1, double y1, double x2, double y2) {
+	double d = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+	double w = exp(-10.0 * d);
+	return w;
+
+}
+
 void simulate2d(int id, int N, double alpha) {
 	double X[N];
 	double Y[N];
@@ -40,7 +73,7 @@ void simulate2d(int id, int N, double alpha) {
 
 	ofstream f;
 
-	cout << "The lambda/alpha^2 ratio is: " << 1.0 * N / (alpha) << "\n";
+	cout << "The lambda/alpha ratio is: " << 1.0 * N / (alpha) << "\n";
 
 	stringstream filename;
 	filename << "degrees-" << int(1.0 * N / (alpha)) << ".txt";
@@ -59,8 +92,10 @@ void simulate2d(int id, int N, double alpha) {
 		degree[i] = 0;
 
 	for (int i = 0; i < N; i++) {
-		X[i] = 1.0 * rand() / RAND_MAX;
-		Y[i] = 1.0 * rand() / RAND_MAX;
+//		cout<<i<<"\n";
+		get_point(X[i], Y[i]);
+//		X[i] = 1.0 * rand() / RAND_MAX;
+//		Y[i] = 1.0 * rand() / RAND_MAX;
 //		cout << X[i] << " " << Y[i] << "\n";
 	}
 
@@ -68,8 +103,10 @@ void simulate2d(int id, int N, double alpha) {
 		for (int j = i + 1; j < N; j++) {
 			double d = distance2d(X[i], Y[i], X[j], Y[j]);
 			double s = score2d(d, alpha);
-			degree[i] = degree[i] + s;
-			degree[j] = degree[j] + s;
+			double ss = weight2d(X[i], Y[i], X[j], Y[j]);
+			ss = 1.0;
+			degree[i] = degree[i] + s * ss;
+			degree[j] = degree[j] + s * ss;
 		}
 	}
 
@@ -79,7 +116,7 @@ void simulate2d(int id, int N, double alpha) {
 //		if ((X[i] > 1.0 / alpha) && (X[i] < 1.0 - 1.0 / alpha)
 //				&& (Y[i] > 1.0 / alpha) && (Y[i] > 1.0 - 1.0 / alpha))
 
-		if (X[i] * X[i] + Y[i] * Y[i] < 1)
+		if (X[i] * X[i] + Y[i] * Y[i] < 10)
 			f << degree[i] << " " << X[i] << " " << Y[i] << '\n';
 	}
 
@@ -167,15 +204,16 @@ int main(int argc, char *argv[]) {
 		alpha = atoi(argv[2]);
 	}
 
-	alpha = 20;
-	for (double B = 20.0; B < 5000; B *= 1.5) {
-		N = int(alpha * B);
-		cout << N << "\n";
-		runBatch2D(100, N, alpha);
-	}
+	runBatch2D(20, N, alpha);
+
+	/*	alpha = 20;
+	 for (double B = 20.0; B < 5000; B *= 1.4) {
+	 N = int(alpha * B);
+	 cout << N << "\n";
+	 runBatch2D(100, N, alpha);
+	 */
 
 //	for (int i=0;i<1000;i++)
 //		simulate1d(i,argc, argv);
-
 }
 

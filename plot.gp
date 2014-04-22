@@ -2,7 +2,7 @@
 
 set term pdf color round font 'Source Sans Pro Bold'
 
-name = "degrees-80"
+name = "degrees-200"
 filename = name.'.txt'
 tablename = name.'.table'
 
@@ -39,7 +39,7 @@ f(x) = a*x+b
 g(x) = 10**b*(x**a)
 
 h(x) = sqrt(2*pi)/x
-fit  [0:2] f(x) tablename using (log10($1)):(log10($2)) via a,b
+fit  [0:1.1] f(x) tablename using (log10($1)):(log10($2)) via a,b
 
 
 set output name.'.pdf'
@@ -62,7 +62,7 @@ unset xtics
 unset ytics
 unset colorbox
 set bmargin 2
-#plot [0:1][0:1] filename every 10 using 2:3:(($1)**(0.1)/100):1 with circles palette lw 5 notitle,\
-#    '' every 10 using 2:3:(log($1)) with points ls 7 lc rgb "#33ff4500" ps 0.01 notitle
+plot [-1:1][-1:1] filename every 40 using 2:3:(($1)**(0.1)/100):1 with circles palette lw 5 notitle,\
+    '' every 40 using 2:3:(log($1)) with points ls 7 lc rgb "#33ff4500" ps 0.01 notitle
    
 
