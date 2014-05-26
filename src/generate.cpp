@@ -17,10 +17,10 @@
 using namespace std;
 
 double distance2d(double x1, double y1, double x2, double y2) {
-//	return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+	return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 //	return sqrt(abs((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
 
-	return sqrt(x1 * x1 + y1 * y1 + x2 * x2 + y2 * y2);
+//	return sqrt(x1 * x1 + y1 * y1 + x2 * x2 + y2 * y2);
 
 }
 
@@ -45,9 +45,8 @@ void get_point(double &x, double &y) {
 	double r = 1.0 * rand() / RAND_MAX;
 	double q = 1.0 * rand() / RAND_MAX;
 
-	x = r*2-1;
-	y = q*2-1
-			;
+	x = r  - 0.5;
+	y = q  - 0.5;
 //	while (q > func_gaussian(r,0,1)){
 ////		cout<<q<<" "<<r<<"  "<<"trying\n";
 //		r = 1.0 * rand() / RAND_MAX;
@@ -116,7 +115,7 @@ void simulate2d(int id, int N, double alpha) {
 //		if ((X[i] > 1.0 / alpha) && (X[i] < 1.0 - 1.0 / alpha)
 //				&& (Y[i] > 1.0 / alpha) && (Y[i] > 1.0 - 1.0 / alpha))
 
-		if (X[i] * X[i] + Y[i] * Y[i] < 10)
+		if (X[i] * X[i] + Y[i] * Y[i] < 0.15)
 			f << degree[i] << " " << X[i] << " " << Y[i] << '\n';
 	}
 
@@ -195,8 +194,8 @@ void runBatch2D(int num_repeats, int N, double alpha) {
 
 int main(int argc, char *argv[]) {
 	/* default values */
-	int N = 4000;
-	double alpha = 20;
+	int N = 8000;
+	double alpha = 40;
 
 	/* process commandline arguments */
 	if (argc == 3) {
@@ -204,7 +203,7 @@ int main(int argc, char *argv[]) {
 		alpha = atoi(argv[2]);
 	}
 
-	runBatch2D(20, N, alpha);
+	runBatch2D(100, N, alpha);
 
 	/*	alpha = 20;
 	 for (double B = 20.0; B < 5000; B *= 1.4) {

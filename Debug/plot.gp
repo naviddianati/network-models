@@ -1,20 +1,27 @@
-#! /usr/bin/gnuplot
+#! /usr/local/bin/gnuplot
 
-set term pdf color round font 'Source Sans Pro Bold'
+#set term pdf color round font 'Source Sans Pro Bold'
+set term pdf color round font 'Source Sans Pro Bold' size 4,3
+#set term pdf color round font 'Dosis' size 4,3
 
-binwidth =1 
+name = "degrees-200"
+filename = name.'.txt'
+tablename = name.'.table'
+
+binwidth =1
+#set grid
+
 bin(x,width)=width*floor(x/width)
 
-#set xrange [70000:200000]
+#set xrange [10:200]
 
 
-set table 'degrees.table'
-plot 'degrees.txt' using (bin($1,binwidth)):(1) smooth freq  with boxes
+set table tablename
+plot filename using (bin($1,binwidth)):(1) smooth freq  with boxes
 unset table
 
-set logscale xy;
 load 'Paired.plt'
-set style fill transparent solid 0.5
+set style fill transparent solid 0.1
 set samples 10000
 
 
@@ -25,12 +32,35 @@ sigma = sqrt(pi*lambda/2.0)/alpha
 mu = 2.0*pi*lambda/alpha/alpha
 N = 100000.0
 
+set xtics scale 2
+set ytics scale 2
+set mytics 10
+set mxtics 10
 
+#set format y "10^{%T}"
+#set format x "10^{%T}"
+set border lw 3 lc rgb "#555555"
 
-f(x)=1.0/(sigma*sqrt(2*pi)) *exp(-1.0/2*((x-mu)/sigma)**2)
+set key spacing 1.5 box lw 3 lc rgb "#555555" opaque textcolor rgb "#555555"
 
+#f(x) = a*x+b
+#g(x) = 10**b*(x**a)
 
-set output 'degrees.pdf'
+#h(x) = sqrt(2*pi)/x
+#poiss(n,lambda) = lambda**n * exp(-lambda)/(gamma(n+1))
+poiss(x,lambda) = (lambda*1.0/x)**x *exp(x*1.0-lambda)/sqrt(2*pi*x)
+#fit  poiss(x) tablename using 1:2 via lambda
 
-plot [0.0001:] [10:]  'degrees.table' using 1:($2):(binwidth)  with boxes ls 5  title 'Degree distribution'
-#plot [0.0001:]  'degrees.table' using 1:($2/N):(binwidth)  with boxes ls 5  title 'Degree distribution'
+set output name.'.pdf'
+
+s = 300*10000
+
+stats tablename using 2 name "freq1"
+
+#set logscale xy;
+#plot   tablename using 1:($2):(binwidth)  with boxes ls 5  title 'Degree distribution'
+plot   tablename using ($1):($2/freq1_sum/binwidth):(binwidth)  with points ls 7 pt 7 ps 0.5 lc rgb "#88333333"   lw 0.5  title 'Agent-based model',\
+      poiss(x,620) with lines lt 1 lc rgb "#33ff4500"  lw 6  title 'Fit: '.sprintf("a = %1.2f; b = %1.2f",1,1);
+
+   
+

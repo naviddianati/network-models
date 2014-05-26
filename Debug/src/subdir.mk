@@ -3,6 +3,9 @@
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
+O_SRCS += \
+../src/generate.o 
+
 CPP_SRCS += \
 ../src/generate.cpp 
 
